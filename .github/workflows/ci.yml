@@ -1,0 +1,28 @@
+name: Verify Momentum
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm audit --audit-level=high
+      - run: npx playwright install --with-deps chromium
+      - run: npm run build
+      - run: npx playwright test
+      - name: Build and test cloud integration with simulated service
+        env:
+          VITE_SUPABASE_URL: https://momentum-test.supabase.co
+          VITE_SUPABASE_PUBLISHABLE_KEY: sb_publishable_test_public_only
+        run: |
+          npm run build
+          npx playwright test tests/browser/cloud.spec.js
