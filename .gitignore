@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.npm-cache/
+test-results/
+.env*
+!.env.example
+backups/
+momentum-*.json
+*.backup.json
+*.zip
+playwright-report/
+supabase/.temp/
